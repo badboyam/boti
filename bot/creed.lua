@@ -4,7 +4,7 @@ package.cpath = package.cpath .. ';.luarocks/lib/lua/5.2/?.so'
 
 require("./bot/utils")
 
-VERSION = '2'
+VERSION = '1.0'
 
 -- This function is called when tg receive a msg
 function on_msg_receive (msg)
@@ -21,11 +21,7 @@ function on_msg_receive (msg)
     msg = pre_process_msg(msg)
     if msg then
       match_plugins(msg)
-      if redis:get("bot:markread") then
-        if redis:get("bot:markread") == "on" then
-          mark_read(receiver, ok_cb, false)
-        end
-      end
+  --   mark_read(receiver, ok_cb, false)
     end
   end
 end
@@ -208,46 +204,46 @@ function create_config( )
   -- A simple config with basic plugins and ourselves as privileged user
   config = {
     enabled_plugins = {
-    "onservice",
+ "onservice",
     "inrealm",
     "ingroup",
     "inpm",
     "banhammer",
-    "stats",
-    "anti_spam",
-    "owners",
+    "Feedback",
+    "lock_join",
+    "antilink",
+    "antitag",
+    "gps",
+    "auto_leave",
+    "block",
+    "tagall",
     "arabic_lock",
+    "welcome",
+    "webshot",
+    "qr",
+    "google",
+    "addplugin",
+    "text",
+    "sms",
+    "Debian_service",
+    "sudoers",
+    "add_admin".
+    "anti_spam",
+    "add_bot",
+    "owners",
     "set",
     "get",
     "broadcast",
-    "auto_leave",
-    "welcome",
-    "servermanager",
-    "addplugin",
-    "qr",
-    "plugins",
-    "Block",
-    "tagall",
-    "chat",
-    "Feedback",
-    "google",
-    "gps",
-    "info",
-    "linkpv",
-    "text",
-    "webshot",
     "download_media",
     "invite",
     "all",
-    "leave_ban",
-    "admin",
+    "leave_ban"
     },
     sudo_users = {83150569},--Sudo users
     disabled_channels = {},
     moderation = {data = 'data/moderation.json'},
-    about_text = [[Telemirror v1
-    
-    Mirror Tg your group manager
+    about_text = [[mirror v2
+     Mirror Tg your group manager
     
       sudo: @pouya_x_boy
       
@@ -258,7 +254,6 @@ function create_config( )
       
       😉😉😉😉😉
       
-      
  
 ]],
     help_text_realm = [[
@@ -266,79 +261,89 @@ Realm Commands:
 
 !creategroup [Name]
 Create a group
+گروه جدیدی بسازید
 
 !createrealm [Name]
 Create a realm
+گروه مادر جدیدی بسازید
 
 !setname [Name]
 Set realm name
+اسم گروه مادر را تغییر بدهید
 
 !setabout [GroupID] [Text]
 Set a group's about text
+در مورد  آن گروه توضیحاتی را بنویسید (ای دی گروه را بدهید )
 
 !setrules [GroupID] [Text]
 Set a group's rules
+در مورد آن گروه قوانینی تعیین کنید ( ای دی گروه را بدهید )
 
 !lock [GroupID] [setting]
 Lock a group's setting
+تنظیکات گروهی را قفل بکنید
 
 !unlock [GroupID] [setting]
 Unock a group's setting
+تنظیمات گروهی را از قفل در بیاورید 
 
 !wholist
 Get a list of members in group/realm
+لیست تمامی اعضای گروه رو با ای دی شون نشون میده
 
 !who
 Get a file of members in group/realm
+لیست تمامی اعضای گروه را با ای دی در فایل متنی دریافت کنید
 
 !type
 Get group type
+در مورد نقش گروه بگیرید
 
 !kill chat [GroupID]
-Kick all memebers and delete group
+Kick all memebers and delete group ⛔️⛔️
+⛔️تمامی اعضای گروه را حذف میکند ⛔️
 
 !kill realm [RealmID]
-Kick all members and delete realm
+Kick all members and delete realm⛔️⛔️
+تمامی اعضای گروه مارد را حذف میکند
 
 !addadmin [id|username]
 Promote an admin by id OR username *Sudo only
+ادمینی را اضافه بکنید
+
 
 !removeadmin [id|username]
-Demote an admin by id OR username *Sudo only
+Demote an admin by id OR username *Sudo only❗️❗️
+❗️❗️ادمینی را با این دستور صلب مقام میکنید ❗️❗️
 
 !list groups
 Get a list of all groups
+لیست تمامی گروه هارو میده
 
 !list realms
 Get a list of all realms
+لیست گروه های مادر را میدهد
+
 
 !log
-Grt a logfile of current group or realm
+Get a logfile of current group or realm
+تمامی عملیات گروه را میدهد
 
 !broadcast [text]
-!broadcast Hello !
-Send text to all groups
-Only sudo users can run this command
+Send text to all groups ✉️
+✉️ با این دستور به تمامی گروه ها متنی را همزمان میفرستید  .
 
-!bc [group_id] [text]
-!bc 123456789 Hello !
-This command will send text to [group_id]
+!br [group_id] [text]
+This command will send text to [group_id]✉️
+با این دستور میتونید به گروه توسط ربات متنی را بفرستید 
 
-
-**U can use both "/" and "!" 
-
-
-*Only admins and sudo can add bots in group
+You Can user both "!" & "/" for them
+میتوانید از هردوی کاراکتر های ! و / برای دستورات استفاده کنید
 
 
-*Only admins and sudo can use kick,ban,unban,newlink,setphoto,setname,lock,unlock,set rules,set about and settings commands
-
-*Only admins and sudo can use res, setowner, commands
 ]],
     help_text = [[
-Commands list :
-
-!kick [username|id]☑
+ !kick [username|id]☑
 You can also do it by reply
 
 !ban [ username|id]🌋
@@ -364,7 +369,6 @@ Will kick user
 
 !about🔰
 Group description
-
 !setphoto⛔
 Set and locks group photo
 
@@ -378,7 +382,6 @@ Group rules
 return group id or user id
 
 !help🎅
-
 !lock [member|name|bots|leave]	🙈
 Locks [member|name|bots|leaveing] 
 
@@ -423,25 +426,21 @@ Will clear [modlist|rules|about] and set it to nil
 
 !res [username]😝
 returns user id
+
 "!res @username"
 
 !log😈
-will return group logs
 
+will return group logs
 !banlist
 will return group ban list
-
 **U can use both "/" and "!" 
-
-
 *Only owner and mods can add bots in group
-
-
 *Only moderators and owner can use kick,ban,unban,newlink,link,setphoto,setname,lock,unlock,set rules,set about and settings commands
-
 *Only owner can use res,setowner,promote,demote and log commands
 
 ]]
+
   }
   serialize_to_file(config, './data/config.lua')
   print('saved config into ./data/config.lua')
@@ -478,7 +477,6 @@ function load_plugins()
 
     if not ok then
       print('\27[31mError loading plugin '..v..'\27[39m')
-      print(tostring(io.popen("lua plugins/"..v..".lua"):read('*all')))
       print('\27[31m'..err..'\27[39m')
     end
 
